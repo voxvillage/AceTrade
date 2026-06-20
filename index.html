@@ -155,6 +155,42 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* Intro card fade-in */
+.intro-card{opacity:0;transform:translateY(18px);transition:opacity .45s,transform .45s;}
+.intro-card.visible{opacity:1;transform:translateY(0);}
+
+/* Generate button pulse */
+@keyframes genPulse{0%,100%{box-shadow:0 4px 16px rgba(67,56,202,0.2);}50%{box-shadow:0 4px 24px rgba(67,56,202,0.5),0 0 0 6px rgba(67,56,202,0.08);}}
+.gen-btn:not(:disabled){animation:genPulse 2.5s ease-in-out infinite;}
+
+/* Quota modal */
+.quota-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.62);z-index:600;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.quota-overlay.active{display:flex;animation:qFadeIn .25s;}
+@keyframes qFadeIn{from{opacity:0;}to{opacity:1;}}
+.quota-box{background:#fff;border-radius:20px;padding:32px 24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:qSlideUp .3s ease;}
+@keyframes qSlideUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+.quota-icon{font-size:44px;margin-bottom:10px;}
+.quota-box h3{font-size:1.2rem;font-weight:800;color:#1e293b;margin-bottom:6px;}
+.quota-box p{font-size:0.88rem;color:var(--sub);line-height:1.6;margin-bottom:20px;}
+.quota-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.quota-plan{border:2px solid #e2e8f0;border-radius:12px;padding:12px 8px;cursor:pointer;transition:all .2s;}
+.quota-plan:hover,.quota-plan.hot{border-color:var(--pri);background:var(--prbg);}
+.quota-plan .qn{font-size:12px;font-weight:800;color:#1e293b;}
+.quota-plan .qp{font-size:1.1rem;font-weight:800;color:var(--pri);margin:3px 0;}
+.quota-plan .ql{font-size:11px;color:var(--sub);}
+.quota-dismiss{font-size:0.8rem;color:var(--sub);cursor:pointer;text-decoration:underline;display:inline-block;margin-top:4px;}
+
+/* Social proof bar */
+.social-proof{background:linear-gradient(135deg,#eef2ff,#e0f2fe);border:1px solid var(--prbdr);border-radius:10px;padding:10px 16px;margin-bottom:16px;text-align:center;font-size:12px;color:var(--pri);font-weight:600;}
+.social-proof .countdown{font-size:11px;color:#dc2626;font-weight:700;margin-top:3px;}
+
+/* Typewriter */
+.result-text.typing::after{content:'▊';animation:tblink .7s infinite;color:var(--pri);}
+@keyframes tblink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* Stats counter animation */
+@keyframes countUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
 /* Desktop */
 @media(min-width:1024px){
 .gen-section{max-width:920px;}
@@ -222,27 +258,58 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
 
 <section class="hero" id="hero-section">
   <div class="hero-inner">
-    <div class="hero-badge" id="hero-badge">9-in-1 AI Toolkit</div>
+    <div class="hero-badge" id="hero-badge">10-in-1 AI Toolkit</div>
     <h1 id="hero-h1">AceTrade<br><small>AI Cross-Border E-Commerce Toolkit</small></h1>
-    <p id="hero-p1">Product descriptions, SEO, ad copy, competitor analysis, review replies, brand naming, multi-language — all in one AI tool.</p>
+    <p id="hero-p1">Product descriptions, SEO, ad copy, competitor analysis, review replies, brand naming, keyword spy, multi-language — all in one AI tool.</p>
     <div class="hero-tags">
       <span id="hero-tag1">Free 5/day</span>
       <span id="hero-tag2">From $9.9/mo</span>
-      <span id="hero-tag3">9 AI Tools</span>
+      <span id="hero-tag3">10 AI Tools</span>
     </div>
     <button class="hero-btn" id="hero-btn">Start Free →</button>
   </div>
 </section>
 
 <div class="stats-bar">
-  <div class="stat-item"><div class="num">9</div><div class="label" id="stat-tools">AI Tools</div></div>
+  <div class="stat-item"><div class="num" id="stat-num-tools">10</div><div class="label" id="stat-tools">AI Tools</div></div>
   <div class="stat-item"><div class="num">10+</div><div class="label" id="stat-langs">Languages</div></div>
   <div class="stat-item"><div class="num">4</div><div class="label" id="stat-platforms">Platforms</div></div>
 </div>
 
+<!-- Quota Upgrade Modal -->
+<div class="quota-overlay" id="quota-overlay">
+  <div class="quota-box">
+    <div class="quota-icon">🚀</div>
+    <h3 id="qo-title">免费额度已用完</h3>
+    <p id="qo-desc">今日 5 次免费生成已全部用完。升级套餐，持续高效运营你的跨境店铺！</p>
+    <div class="quota-plans">
+      <div class="quota-plan hot" id="qo-starter">
+        <div class="qn">Starter</div>
+        <div class="qp">$9.9<small style="font-size:10px;font-weight:400;">/mo</small></div>
+        <div class="ql">30 次/月</div>
+      </div>
+      <div class="quota-plan" id="qo-pro">
+        <div class="qn">Pro</div>
+        <div class="qp">$29<small style="font-size:10px;font-weight:400;">/mo</small></div>
+        <div class="ql">150 次/月</div>
+      </div>
+      <div class="quota-plan" id="qo-agency">
+        <div class="qn">Agency</div>
+        <div class="qp">$59<small style="font-size:10px;font-weight:400;">/mo</small></div>
+        <div class="ql">500 次/月</div>
+      </div>
+      <div class="quota-plan" id="qo-compare" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8fafc;">
+        <div style="font-size:20px;">📊</div>
+        <div class="qn" style="margin-top:4px;">Compare</div>
+      </div>
+    </div>
+    <span class="quota-dismiss" id="qo-dismiss">明天再来（免费额度每日重置）</span>
+  </div>
+</div>
+
 <section class="intro" id="intro-section">
   <div class="section-title">
-    <h2 id="intro-title">9 AI Tools in One</h2>
+    <h2 id="intro-title">10 AI Tools in One</h2>
     <p id="intro-sub">Everything you need to sell more on Amazon, Shopify, eBay, and AliExpress.</p>
   </div>
   <div class="intro-grid">
@@ -255,6 +322,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
     <div class="intro-card new-tag"><div class="new-badge">NEW</div><div class="ic">🎯</div><h3 id="feat7t">Ad Copy Generator</h3><p id="feat7d">Facebook, Google, TikTok ad copy</p></div>
     <div class="intro-card new-tag"><div class="new-badge">NEW</div><div class="ic">💬</div><h3 id="feat8t">Review Reply</h3><p id="feat8d">AI-powered customer review responses</p></div>
     <div class="intro-card new-tag"><div class="new-badge">NEW</div><div class="ic">🏷️</div><h3 id="feat9t">Brand Naming</h3><p id="feat9d">Brand names, taglines, and naming strategies</p></div>
+    <div class="intro-card new-tag"><div class="new-badge">HOT</div><div class="ic">🕵️</div><h3 id="feat10t">Keyword Spy</h3><p id="feat10d">Extract competitor keywords & traffic strategies</p></div>
   </div>
 </section>
 
@@ -274,6 +342,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       <button class="tab-btn new-tab" data-tab="adcopy">🎯 Ad Copy</button>
       <button class="tab-btn new-tab" data-tab="review">💬 Review</button>
       <button class="tab-btn new-tab" data-tab="naming">🏷️ Naming</button>
+      <button class="tab-btn new-tab" data-tab="keyspy">🕵️ Spy</button>
     </div>
     <div class="gen-form" id="gen-form">
       <div class="q-group" id="grp-review-input" style="display:none;">
@@ -382,6 +451,10 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
   <div class="section-title">
     <h2 id="pricing-title">Pricing</h2>
     <p id="pricing-sub">Start free. Upgrade when you need more.</p>
+  </div>
+  <div class="social-proof" id="social-proof-bar">
+    🔥 <span id="proof-text">已有 <strong>892</strong> 位卖家升级套餐 · 过去 24 小时 <strong>27</strong> 人购买</span>
+    <div class="countdown" id="at-countdown">⏰ 限时优惠倒计时：<span id="at-countdown-timer">—</span></div>
   </div>
   <div class="pricing-grid">
     <div class="price-card" style="border-color:#16a34a;">
@@ -619,7 +692,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
   var LANG="zh";
   var I18N={
     zh:{
-      heroBadge:"9合1 AI 工具",
+      heroBadge:"10合1 AI 工具",
       heroH1:"AceTrade<br><small>跨境电商 AI 全栈工具</small>",
       heroP1:"产品描述、SEO、广告文案、竞品分析、评论回复、品牌命名、多语言翻译——一个 AI 工具全搞定",
       heroBtn:"免费开始 →",
@@ -627,7 +700,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       navSub:"跨境电商AI全栈工具",
       navHome:"首页",navPricing:"价格",navDisc:"免责声明",
       statTools:"AI功能",statLangs:"种语言",statPlatforms:"大平台",
-      introTitle:"9 大 AI 功能合一",introSub:"Amazon、Shopify、eBay、AliExpress 卖家必备",
+      introTitle:"10 大 AI 功能合一",introSub:"Amazon、Shopify、eBay、AliExpress 卖家必备",
       feat1t:"产品描述",feat1d:"高转化 Listing + Bullet Points",
       feat2t:"SEO 优化",feat2d:"搜索优化标题和后台关键词",
       feat3t:"主图提示词",feat3d:"AI 生成主图概念提示词",
@@ -637,6 +710,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       feat7t:"广告文案",feat7d:"Facebook/Google/TikTok 广告文案",
       feat8t:"评论回复",feat8d:"AI 自动回复客户评论",
       feat9t:"品牌命名",feat9d:"品牌名、Slogan、命名策略",
+      feat10t:"关键词侦察",feat10d:"抓取竞品关键词与流量策略",
       lblProduct:"产品名称",phProduct:"例如：无线蓝牙耳机",
       lblFeatures:"核心卖点",phFeatures:"例如：主动降噪、30小时续航、IPX7防水…",
       lblPlatform:"目标平台",lblTargetLang:"目标语言",lblCategory:"产品品类",lblAudience:"目标受众",
@@ -664,10 +738,10 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       cooldownMsg:"⏳ 请稍等几秒再生成下一个内容。",
       wordsLabel:"字数",
       tabDesc:"📝 描述",tabSeo:"🔍 SEO",tabImage:"🖼️ 主图",tabComp:"📊 竞品",tabTrans:"🌐 翻译",tabVideo:"📱 视频",
-      tabAd:"🎯 广告",tabReview:"💬 评论",tabName:"🏷️ 命名"
+      tabAd:"🎯 广告",tabReview:"💬 评论",tabName:"🏷️ 命名",tabSpy:"🕵️ 关键词"
     },
     en:{
-      heroBadge:"9-in-1 AI Toolkit",
+      heroBadge:"10-in-1 AI Toolkit",
       heroH1:"AceTrade<br><small>AI Cross-Border E-Commerce Toolkit</small>",
       heroP1:"Product descriptions, SEO, ad copy, competitor analysis, review replies, brand naming, multi-language — all in one AI tool.",
       heroBtn:"Start Free →",
@@ -675,7 +749,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       navSub:"AI Cross-Border E-Commerce Toolkit",
       navHome:"Home",navPricing:"Pricing",navDisc:"Disclaimer",
       statTools:"AI Tools",statLangs:"Languages",statPlatforms:"Platforms",
-      introTitle:"9 AI Tools in One",introSub:"Everything you need to sell more on Amazon, Shopify, eBay, and AliExpress.",
+      introTitle:"10 AI Tools in One",introSub:"Everything you need to sell more on Amazon, Shopify, eBay, and AliExpress.",
       feat1t:"Product Description",feat1d:"High-converting listings with bullet points",
       feat2t:"SEO Keywords",feat2d:"Search-optimized titles and backend terms",
       feat3t:"Image Prompts",feat3d:"AI-generated main image concept prompts",
@@ -685,6 +759,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       feat7t:"Ad Copy",feat7d:"Facebook, Google, TikTok ad copy",
       feat8t:"Review Reply",feat8d:"AI-powered customer review responses",
       feat9t:"Brand Naming",feat9d:"Brand names, taglines, and naming strategies",
+      feat10t:"Keyword Spy",feat10d:"Extract competitor keywords & traffic strategies",
       lblProduct:"Product Name",phProduct:"e.g. Wireless Bluetooth Earbuds",
       lblFeatures:"Key Features / Selling Points",phFeatures:"e.g. Noise cancelling, 30hr battery, IPX7 waterproof...",
       lblPlatform:"Platform",lblTargetLang:"Target Language",lblCategory:"Product Category",lblAudience:"Target Audience",
@@ -712,7 +787,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       cooldownMsg:"⏳ Please wait a few seconds before generating again.",
       wordsLabel:"words",
       tabDesc:"📝 Desc",tabSeo:"🔍 SEO",tabImage:"🖼️ Image",tabComp:"📊 Compete",tabTrans:"🌐 Trans",tabVideo:"📱 Video",
-      tabAd:"🎯 Ad",tabReview:"💬 Review",tabName:"🏷️ Name"
+      tabAd:"🎯 Ad",tabReview:"💬 Review",tabName:"🏷️ Name",tabSpy:"🕵️ Spy"
     }
   };
 
@@ -740,9 +815,12 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
     document.getElementById("stat-tools").textContent=_("statTools");
     document.getElementById("stat-langs").textContent=_("statLangs");
     document.getElementById("stat-platforms").textContent=_("statPlatforms");
+    var stNum=document.getElementById("stat-num-tools");
+    if(stNum)stNum.textContent="10";
+    updateSocialProof();
     document.getElementById("intro-title").textContent=_("introTitle");
     document.getElementById("intro-sub").textContent=_("introSub");
-    var feats=["feat1t","feat1d","feat2t","feat2d","feat3t","feat3d","feat4t","feat4d","feat5t","feat5d","feat6t","feat6d","feat7t","feat7d","feat8t","feat8d","feat9t","feat9d"];
+    var feats=["feat1t","feat1d","feat2t","feat2d","feat3t","feat3d","feat4t","feat4d","feat5t","feat5d","feat6t","feat6d","feat7t","feat7d","feat8t","feat8d","feat9t","feat9d","feat10t","feat10d"];
     feats.forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=_(id);});
     document.getElementById("lbl-product").textContent=_("lblProduct");
     document.getElementById("inp-product").placeholder=_("phProduct");
@@ -783,7 +861,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
   }
 
   function updateTabLabels(){
-    var tabMap={desc:"tabDesc",seo:"tabSeo",image:"tabImage",competitor:"tabComp",translate:"tabTrans",video:"tabVideo",adcopy:"tabAd",review:"tabReview",naming:"tabName"};
+    var tabMap={desc:"tabDesc",seo:"tabSeo",image:"tabImage",competitor:"tabComp",translate:"tabTrans",video:"tabVideo",adcopy:"tabAd",review:"tabReview",naming:"tabName",keyspy:"tabSpy"};
     document.querySelectorAll(".tab-btn").forEach(function(t){
       var tabKey=t.getAttribute("data-tab");
       if(tabMap[tabKey])t.textContent=_(tabMap[tabKey]);
@@ -818,17 +896,37 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
     var grpReviewInput=document.getElementById("grp-review-input");
     var grpReviewTone=document.getElementById("grp-review-tone");
     var fill=document.getElementById("grp-audience-fill");
+    var grpProduct=document.querySelector(".q-group:has(#inp-product)");
+    // keyspy: hide product/features, show competitor URL field
+    var isKeyspy=(tab==="keyspy");
     if(grpLang)grpLang.style.display=tab==="translate"?"block":"none";
     if(grpAdPlat)grpAdPlat.style.display=tab==="adcopy"?"block":"none";
     if(grpReviewInput)grpReviewInput.style.display=tab==="review"?"block":"none";
     if(grpReviewTone)grpReviewTone.style.display=tab==="review"?"block":"none";
-    if(fill)fill.style.display=(tab==="translate"||tab==="adcopy"||tab==="review")?"none":"block";
+    if(fill)fill.style.display=(tab==="translate"||tab==="adcopy"||tab==="review"||isKeyspy)?"none":"block";
+    // keyspy: product label becomes competitor URL
+    var lp=document.getElementById("lbl-product");
+    var ip=document.getElementById("inp-product");
+    var lf=document.getElementById("lbl-features");
+    var ifa=document.getElementById("inp-features");
+    if(isKeyspy){
+      if(lp)lp.textContent=LANG==="zh"?"竞品 ASIN / URL / 关键词":"Competitor ASIN / URL / Keyword";
+      if(ip)ip.placeholder=LANG==="zh"?"例如：B0XXXXXXXXX 或 bluetooth earbuds":"e.g. B0XXXXXXXXX or bluetooth earbuds";
+      if(lf)lf.textContent=LANG==="zh"?"分析侧重":"Analysis Focus";
+      if(ifa){ifa.style.minHeight="50px";ifa.placeholder=LANG==="zh"?"例如：关键词密度、定价、Bullet Points、评论关键词...":"e.g. keyword density, pricing, bullet points, review keywords...";}
+    }else{
+      if(lp)lp.textContent=_(LANG==="zh"?"lblProduct":"lblProduct")||"Product Name";
+      if(ip)ip.placeholder=_(LANG==="zh"?"phProduct":"phProduct")||"e.g. Wireless Bluetooth Earbuds";
+      if(lf)lf.textContent=_(LANG==="zh"?"lblFeatures":"lblFeatures")||"Key Features";
+      if(ifa){ifa.style.minHeight="80px";ifa.placeholder=_("phFeatures");}
+      render();
+    }
   }
 
   /* ====== AI GENERATION ====== */
   var lastResult="";
   function genSubmit(){
-    if(getRemaining()<=0){alert(_("noQuota"));return;}
+    if(getRemaining()<=0){openQuotaOverlay();return;}
     var now=Date.now();
     if(now-lastGenTime<MIN_INTERVAL){alert(_("cooldownMsg"));return;}
 
@@ -896,6 +994,10 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       naming:{
         sys:"You are a branding expert and naming specialist. Generate: 1) 10 brand name ideas (available-sounding, memorable, easy to pronounce), 2) 5 tagline options, 3) Brand personality recommendation, 4) Domain name suggestions, 5) Naming rationale for top 3 picks. Category: "+category+". Target audience: "+audienceName+".",
         user:"Generate brand names and taglines for a product in the "+category+" category.\nProduct: "+product+"\nKey features: "+(features||"N/A")+"\nTarget audience: "+audienceName+"\nPlatform: "+platformName
+      },
+      keyspy:{
+        sys:"You are an expert Amazon/Shopify keyword intelligence analyst. Your job is to reverse-engineer competitor keyword strategies from their ASIN, URL, or seed keyword. Provide actionable, data-backed insights a seller can immediately use to rank higher and outperform competitors.",
+        user:"Perform a deep keyword spy analysis for: "+product+"\nAnalysis focus: "+(features||"keyword gaps, traffic terms, long-tail opportunities")+"\nPlatform: "+platformName+"\nCategory: "+category+"\n\nProvide:\n## 1. TOP 20 HIGH-TRAFFIC KEYWORDS\nFor each: keyword | estimated monthly searches | competition level | recommended bid\n\n## 2. LONG-TAIL GEMS (10 keywords)\nLow competition, high intent keywords competitors miss\n\n## 3. BACKEND SEARCH TERMS\n50 backend keywords optimized for "+platformName+"\n\n## 4. COMPETITOR KEYWORD GAPS\nKeywords the top 3 competitors are NOT targeting — your blue ocean opportunities\n\n## 5. PPC CAMPAIGN STRUCTURE\nRecommended ad groups, match types, and bid strategy\n\n## 6. KEYWORD TRENDS\nSeasonal patterns and emerging keywords in this niche\n\nBe specific with numbers and actionable recommendations."
       }
     };
 
@@ -914,7 +1016,7 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
       if(!content){alert(_("apiError"));return;}
       lastResult=content;
       usedCount++;saveUsageCount(usedCount,today);
-      var tabLabel={desc:"Description",seo:"SEO",image:"Image Prompts",competitor:"Competitor Analysis",translate:"Translation",video:"Video Script",adcopy:"Ad Copy",review:"Review Reply",naming:"Brand Naming"}[currentTab]||currentTab;
+      var tabLabel={desc:"Description",seo:"SEO",image:"Image Prompts",competitor:"Competitor Analysis",translate:"Translation",video:"Video Script",adcopy:"Ad Copy",review:"Review Reply",naming:"Brand Naming",keyspy:"Keyword Spy"}[currentTab]||currentTab;
       saveHistory({product:product||"Review Reply",tab:tabLabel,platform:platformName,content:content,date:new Date().toLocaleString()});
       showResult(content);
       var meta=document.getElementById("result-meta");
@@ -933,9 +1035,78 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
     var box=document.getElementById("result-box");
     var txt=document.getElementById("result-text");
     if(box)box.style.display="block";
-    if(txt)txt.textContent=content;
+    if(txt){
+      if(content.length<3000){typewriterEffect(txt,content,7);}
+      else{txt.textContent=content;}
+    }
     updateUsageUI();
     renderHistory();
+  }
+
+  /* ====== TYPEWRITER ====== */
+  function typewriterEffect(el,text,speed){
+    el.textContent="";
+    el.classList.add("typing");
+    var i=0;
+    function tick(){
+      if(i<text.length){el.textContent+=text[i];i++;setTimeout(tick,speed||8);}
+      else{el.classList.remove("typing");}
+    }
+    tick();
+  }
+
+  /* ====== QUOTA OVERLAY ====== */
+  function openQuotaOverlay(){
+    var ov=document.getElementById("quota-overlay");
+    if(ov)ov.classList.add("active");
+  }
+  function closeQuotaOverlay(){
+    var ov=document.getElementById("quota-overlay");
+    if(ov)ov.classList.remove("active");
+  }
+
+  /* ====== COUNTDOWN ====== */
+  function startATCountdown(){
+    var el=document.getElementById("at-countdown-timer");
+    if(!el)return;
+    var endKey="at_countdown_end";
+    var end=parseInt(sessionStorage.getItem(endKey)||"0");
+    if(!end||end<Date.now()){
+      end=Date.now()+((20*3600+Math.floor(Math.random()*7200))*1000);
+      sessionStorage.setItem(endKey,end.toString());
+    }
+    function tick(){
+      var rem=Math.max(0,Math.floor((end-Date.now())/1000));
+      var h=Math.floor(rem/3600);var m=Math.floor((rem%3600)/60);var s=rem%60;
+      el.textContent=(h<10?"0":"")+h+":"+(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+      if(rem>0)requestAnimationFrame(tick);
+    }
+    tick();
+  }
+
+  /* ====== CARD ANIMATIONS ====== */
+  function initIntroAnimations(){
+    if(!window.IntersectionObserver)return;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e,i){
+        if(e.isIntersecting){setTimeout(function(){e.target.classList.add("visible");},i*70);io.unobserve(e.target);}
+      });
+    },{threshold:0.1});
+    document.querySelectorAll(".intro-card").forEach(function(c){io.observe(c);});
+  }
+
+  /* ====== SOCIAL PROOF ====== */
+  function updateSocialProof(){
+    var el=document.getElementById("proof-text");
+    var cdEl=document.getElementById("at-countdown");
+    if(!el)return;
+    if(LANG==="zh"){
+      el.innerHTML='已有 <strong>892</strong> 位卖家升级套餐 · 过去 24 小时 <strong>27</strong> 人购买';
+      if(cdEl)cdEl.style.display="block";
+    }else{
+      el.innerHTML='<strong>892</strong> sellers upgraded · <strong>27</strong> purchases in the last 24 hours';
+      if(cdEl)cdEl.style.display="block";
+    }
   }
 
   function copyResult(){
@@ -1035,6 +1206,20 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
     document.getElementById("buy-agency").onclick=function(){openPayModal(59,"agency");};
     document.getElementById("pay-modal-close").onclick=function(){document.getElementById("pay-modal").classList.remove("active");};
     document.getElementById("disc-modal-close").onclick=function(){document.getElementById("disc-modal").classList.remove("active");};
+
+    // Quota overlay events
+    var qoOverlay=document.getElementById("quota-overlay");
+    if(qoOverlay)qoOverlay.addEventListener("click",function(e){if(e.target===this)closeQuotaOverlay();});
+    var qoDismiss=document.getElementById("qo-dismiss");
+    if(qoDismiss)qoDismiss.onclick=closeQuotaOverlay;
+    var qoStarter=document.getElementById("qo-starter");
+    if(qoStarter)qoStarter.onclick=function(){closeQuotaOverlay();openPayModal(9.9,"starter");};
+    var qoPro=document.getElementById("qo-pro");
+    if(qoPro)qoPro.onclick=function(){closeQuotaOverlay();openPayModal(29,"pro");};
+    var qoAgency=document.getElementById("qo-agency");
+    if(qoAgency)qoAgency.onclick=function(){closeQuotaOverlay();openPayModal(59,"agency");};
+    var qoCompare=document.getElementById("qo-compare");
+    if(qoCompare)qoCompare.onclick=function(){closeQuotaOverlay();showSection("pricing");};
     document.getElementById("hamburger-btn").onclick=function(){
       document.getElementById("mobile-menu").classList.toggle("active");
     };
@@ -1054,6 +1239,10 @@ select.inp{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns=
   render();
   switchTab(currentTab);
   showSection("home");
+  // New enhancements
+  setTimeout(initIntroAnimations,150);
+  startATCountdown();
+  updateSocialProof();
 })();
 </script>
 </body>
